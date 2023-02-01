@@ -1,16 +1,55 @@
-version: '3'
+version: "3"
+networks:
+  app-network:
+    driver: bridge
+
 services:
   rabbitmq:
-    container_name: rabbitmq
-    hostname: rabbitmq
-    image: rabbitmq:3.11-management
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
     ports:
-      - 5672:5672
-      - 15672:15672
-  
-  redis:
-    container_name: redis
-    hostname: redis
-    image: redis/redis-stack:latest
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  api:
+    build: ./api
     ports:
-      - 6379:6379
+      - "4001:4001"
+    environment:
+      PORT: 4001
+      DB_URL: /db.sqlite/commands.db
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+    networks:
+      - app-network
+    depends_on:
+      - "rabbitmq"
+    links:
+      - rabbitmq
+    restart: on-failure
+    volumes:
+      - ./db.sqlite:/db.sqlite
+
+  consumer:
+    build: ./consumers
+    environment:
+      DB_URL: /db.sqlite/commands.db
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+    networks:
+      - app-network
+    depends_on:
+      - "rabbitmq"
+    links:
+      - rabbitmq
+    restart: on-failure
+    volumes:
+      - ./db.sqlite:/db.sqlite
+
+  db:
+    image: nouchka/sqlite3:latest
+    volumes:
+      - ./db.sqlite:/db.sqlite

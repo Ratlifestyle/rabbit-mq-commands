@@ -1,0 +1,25 @@
+{
+  "name": "rabbit-mq-commands",
+  "version": "1.0.0",
+  "description": "lancer la commande npm i lancer la commande node indexProvider.js dans provider_app lancer la commande node index.js dans client_app la route pour lancer la commande est /send-msg la route pour récupérer l'état de la commande est /get-state le worker est dans client_app l'api est dans provider_app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node worker.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ratlifestyle/rabbit-mq-commands.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ratlifestyle/rabbit-mq-commands/issues"
+  },
+  "homepage": "https://github.com/Ratlifestyle/rabbit-mq-commands#readme",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.4"
+  }
+}
